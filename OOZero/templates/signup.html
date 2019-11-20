@@ -4,6 +4,7 @@
 
 
 
+<div class="login-dark">
 
 <form action="{{ url_for('signup') }}" method="post" class="m-auto" style="width: 400px;">
     <span class="text-danger">{{ error if error else ''}}</span>
@@ -27,4 +28,5 @@
         <input type="submit" value="Login" class="btn btn-primary">
     </div>
 </form>
+</div>
 {% endblock %}

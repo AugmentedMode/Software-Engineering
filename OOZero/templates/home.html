@@ -2,37 +2,20 @@
 {% block title %}OO-Notes{% endblock %}
 {% block content %}
 
-  <div class="jumbotron text-center" style="padding-top: 5%">
-        <h1>OO-Zero Note Taking</span>
-        <br>
-        <h4> Welcome to our web site for managing personal notes and information!</h4>
-        <br>
-        {% if username %}
-        <h3> Hello, {{username}}!</h3>
-        <h4> Today's Date is:</h4>
-        <h4 id="date"></h4>
+<div class="container">
 
-        {% endif %}
-    </div>
-    <div class="container" id="about">
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center slideanim">
-            </div><!-- ./column -->
-        </div><!-- ./row -->
-        <div class="row">
-            <div class="col-md-4 col-lg-4 col-sm-12 co-xs-12 text-center">
-                <h3><b>Signup / Login System</b></h3>
-            </div>
+  <p class="home-hello"> Hi, welcome to </p>
+  <h1 class="home-name"> OOZero Note Taking. </h1>
+  <h1 class="home-intro"> A simple website to take your notes. </h1>
+  <div class="col-sm-12 col-md-6">
+  <p class="home-text"> Everyone here at OOZero Notetaking takes your privacy and your priorities as our number one goal. So feel free to sign up and give us a try!
+  </div>
+    <form method="post" action="/signup/">
+      <input type="submit" class="btn btn-primary background white boarder" type="submit" value="Signup - It's Free!" />
+    </form>
+  <br><br>
+</div>
 
-            <div class="col-md-4 col-lg-4 col-sm-12 co-xs-12 text-center">
-                <h3><b>Add,Delete and Edit Notes</b></h3>
-            </div>
-
-            <div class="col-md-4 col-lg-4 col-sm-12 co-xs-12 text-center">
-                <h3><b>More to Come!</b></h3>
-            </div>
-        </div> <!-- ./row -->
-    </div> <!-- ./cotainer -->
 <script>
 n =  new Date();
 y = n.getFullYear();
