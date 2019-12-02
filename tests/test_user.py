@@ -88,7 +88,6 @@ class TestUser(TestCase, unittest.TestCase):
         self.assertIsNone(event.Event.query.filter_by(id=testEvent.id).first())
         user.removeUser(testPerson.id) #Make sure error is not thrown for non existent user
 
-
     def test_authenticateUser(self):
         newUser = user.addUser("dust", "goodPassword")
         self.assertIsNone(user.authenticateUser("dust", "badPassword"))
@@ -102,6 +101,17 @@ class TestUser(TestCase, unittest.TestCase):
         self.assertNotEqual(x, "87944a379ba0ecdb9f65e2ddfea8503dd2fee42499d55ed590e9783a8c6d68b46e8a568146d1815e1b9330f6307cd0c101dc5330c6ef4b171b4a852efd037daa")
         self.assertEqual(len(x), 128)
 
+    def test_editUser(self):
+        user1 = user.getUser("username")
+        user1new = user.editUser(user1, username="farquad")
+        self.assertEqual(user1.id, user1new.id)
+        self.assertEqual(user1new.username, "farquad")
+        user1 = user.addUser("Test1", "Test1", "Test1")
+        self.assertRaises(ValueError, lambda: user.editUser(user1, "Test2", "ah"))
+        user1new = user.getUser(user1.id)
+        self.assertEqual(user1.username, user1new.username) #Test rollback
+        user1new = user.editUser(user1, password="newPassword")
+        self.assertTrue(user.authenticateUser(user1new.username, "newPassword"))
 
 if __name__ == '__main__':
     unittest.main()

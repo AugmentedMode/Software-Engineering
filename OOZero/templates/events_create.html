@@ -1,0 +1,142 @@
+{% extends "layout.html" %}
+
+{% block styles %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.0/themes/smoothness/jquery-ui.css">
+{% endblock %}
+
+{% block content %}
+<form action="{{ url_for('events.create_or_edit') }}" method="post" class="m-auto" style="width: 400px;">
+    {% if event %}
+        <input type="hidden" name="id" value="{{ event.id }}">
+    {% endif %}
+
+    <h1>{% block title %}{{ 'Edit' if event else 'Create' }} Event{% endblock %}</h1>
+    <span class="text-danger">{{ error if error else ''}}</span>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" class="form-control" value="{{ event.name if event else '' }}" required>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" class="form-control">
+            {{ '' if not event else checkCachedEncrypted(event) if event.event_type == EventType.ENCRYPTED else event.description }}
+        </textarea>
+    </div>
+    <div id="startTimeDiv" class="form-group" style="display: none;">
+        <label for="start_time">Start Time</label>
+        <div class="input-group date">
+            <input id="start_time" name="start_time" type="text" class="form-control"
+                value="{{ event.start_time.strftime('%m/%d/%Y') if event and (event.event_type == EventType.EVENT or event.event_type == EventType.REMINDER) else '' }}" 
+                required>
+        </div>
+    </div>
+    <div id="endTimeDiv" class="form-group" style="display: none;">
+        <label for="end_time">End Time</label>
+        <div class="input-group date">
+            <input id="end_time" name="end_time" type="text" class="form-control"
+                value="{{ event.end_time.strftime('%m/%d/%Y') if event and event.event_type == EventType.EVENT else '' }}"
+                required>
+        </div>
+    </div>
+    <div id="passwordDiv" class="form-group" style="display: none;">
+        <label for="event_password">Password</label>
+        <div class="input-group">
+            <input id="event_password" name="event_password" type="password" class="form-control" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="event_type">Event Type</label>
+        <select id="event_type" name="event_type" class="form-control" required {{ 'readonly' if event else '' }}>
+            <option value="">Select Event Type</option>
+            {% for e in EventType %}
+            <option value="{{ e.value }}" {{ 'selected' if event.event_type == e else '' }}>{{ e.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="{{ 'Save' if event else 'Create' }}" class="btn btn-primary">
+    </div>
+</form>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+    integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM="
+    crossorigin="anonymous"></script>
+<script type="text/javascript">
+    // Hide or show various divs based on EventType
+    function hideOrShowDivs() {
+        let startTimeDiv = document.querySelector("#startTimeDiv");
+        let endTimeDiv = document.querySelector("#endTimeDiv");
+        let eventType = document.querySelector("#event_type");
+        let passwordDiv = document.querySelector("#passwordDiv");
+        startTimeDiv.style.display = "none";
+        endTimeDiv.style.display = "none";
+        passwordDiv.style.display = "none";
+        document.getElementById("description").required = false;
+        document.getElementById("start_time").required = false;
+        document.getElementById("end_time").required = false;
+        document.getElementById("event_password").required = false;
+        switch (eventType.value) {
+        case "{{ EventType.EVENT.value }}":
+            startTimeDiv.style.display = "inline";
+            endTimeDiv.style.display = "inline";
+            document.getElementById("start_time").required = true;
+            document.getElementById("end_time").required = true;
+            break;
+        case "{{ EventType.REMINDER.value }}":
+            document.getElementById("start_time").required = true;
+            startTimeDiv.style.display = "inline";
+            break;
+        case "{{ EventType.ENCRYPTED.value }}":
+            passwordDiv.style.display = "inline";
+            document.getElementById("description").required = true;
+            document.getElementById("event_password").required = true;
+            break;
+        }
+    }
+    window.addEventListener("load", function() {
+        function validateEvent() {
+            hideOrShowDivs();
+            startTime = document.querySelector("#start_time");
+            endTime = document.querySelector("#end_time");
+            eventType = document.querySelector("#event_type");
+            password = document.querySelector("#event_password");
+            description = document.querySelector("#description");
+            startTime.required = false;
+            endTime.required = false;
+            password.required = false;
+            description.required = false;
+            switch (eventType.value) {
+            case "{{ EventType.ENCRYPTED.value }}":
+                password.required = true;
+                description.required = true;
+                break;
+            case "{{ EventType.NOTE.value }}":
+                break;
+            case "{{ EventType.EVENT.value }}":
+                startTime.required = true;
+                endTime.required = true;
+                break;
+            case "{{ EventType.REMINDER.value }}":
+                startTime.required = true;
+                break;
+            }
+        }
+        document.querySelector("#event_type").addEventListener("change", validateEvent);
+        // Call validateEvent() onload to ensure the proper required attributes are set
+        validateEvent();
+    });
+    // Setup the datetime pickers
+    $(function () {
+        $("#start_time").datetimepicker({
+            inline: true,
+            sideBySide: true
+        });
+        $("#end_time").datetimepicker({
+            inline: true,
+            sideBySide: true
+        });
+    });
+</script>
+{% endblock %}

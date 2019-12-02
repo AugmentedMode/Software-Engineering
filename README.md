@@ -25,11 +25,23 @@ OOZERO_CONFIG = your_flask_dir/OOZero/config.cfg
 ```
 Running:
 ```
-Windows Powershell: $env:FLASK_APP = "flask_app"
-Windows CMD: set FLASK_APP=flask_app
-Linux Bash: export FLASK_APP=flask_app
+Windows Powershell: 
+    $env:FLASK_APP = "flask_app"
+    $env:OOZERO_CONFIG = "your_flask_dir/OOZero/config.cfg"
+Windows CMD: 
+    set FLASK_APP=flask_app
+    set OOZERO_CONFIG=your_flask_dir/OOZero/config.cfg
+Linux Bash: 
+    export FLASK_APP=flask_app
+    export OOZERO_CONFIG=your_flask_dir/OOZero/config.cfg
+
+    python tests/generateDB.py
 
 flask run
+```
+Generate development database with dummy data
+```
+python tests/generateDB.py
 ```
 ## Testing:
 

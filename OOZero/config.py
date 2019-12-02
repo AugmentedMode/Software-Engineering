@@ -4,8 +4,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 class ProductionConfig(Config):
-    SQLALCHEMY_DATABASE_URI = '' #TODO set this to mysql database
-    pass
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///production.db'
 
 class StagingConfig(Config):
     DEVELOPMENT = True

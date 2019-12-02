@@ -8,7 +8,7 @@ def login_required(func):
     """
     @wraps(func)
     def decorator(*args, **kargs):
-        if not 'user' in session:
+        if not 'username' in session:
             return redirect(url_for('login'))
         return func(*args, **kargs)
     return decorator
@@ -19,9 +19,18 @@ def user_login(user):
     Args:
         user: Value returned by authenticateUser()
     """
-    session['user'] = user.username
+    session['username'] = user.username
+    session["Passes"] = {}
 
 def user_logout():
     """Log the current user out"""
     if 'user' in session:
-        del session['user']
+        del session['username']
+        del session["Passes"]
+
+def current_username():
+    """Return the username of the user that is currently logged in. If no
+       user is logged in, it returns None.
+    """ 
+    return session['username'] if 'username' in session else None
+
