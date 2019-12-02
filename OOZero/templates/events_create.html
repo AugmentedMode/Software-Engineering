@@ -18,9 +18,7 @@
     </div>
     <div class="form-group">
         <label for="description">Description</label>
-        <textarea id="description" name="description" class="form-control">
-            {{ '' if not event else checkCachedEncrypted(event) if event.event_type == EventType.ENCRYPTED else event.description }}
-        </textarea>
+        <textarea id="description" name="description" class="form-control">{{ '' if not event else checkCachedEncrypted(event) if event.event_type == EventType.ENCRYPTED else event.description }}</textarea>
     </div>
     <div id="startTimeDiv" class="form-group" style="display: none;">
         <label for="start_time">Start Time</label>

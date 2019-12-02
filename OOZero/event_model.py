@@ -276,11 +276,12 @@ def getEventById(id):
     """
     return Event.query.filter_by(id=id).first()
 
-def getEventsByOwner(owner, search=None):
+def getEventsByOwner(owner, search=None, event_type=None):
     """Get list of events by their owner
     Args:
         owner (int | User): User object or user id
         search (str): Search string to limit results
+        event_type (EventType): Event type to further limit results
     """
     if type(owner) is user.User:
         owner = owner.id
@@ -289,6 +290,9 @@ def getEventsByOwner(owner, search=None):
         search = '%' + search + '%'
         events = events.filter(Event.name.like(search)
                                | Event.description.like(search))
+    # Sort by event
+    if event_type:
+        events = events.filter_by(event_type=event_type)
     return events.all()
 
 def editEvent(event, name=None, owner=None, event_type=None, description=None, start_time=None, end_time=None, password=None, page=None, position_x=None, position_y=None):

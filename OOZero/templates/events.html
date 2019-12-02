@@ -13,7 +13,21 @@
         <div class="offset-md-4 col-md-2 d-flex align-items-end mb-2">
             <a href="{{ url_for('events.create_or_edit') }}" class="btn btn-primary btn-block">Create</a>
         </div>
+
+        <div class="btn-group btn-block m-2" title="Filter by type">
+            <a href="{{ url_for('events.index', search=request.args['q'], event_type='') }}"
+                class="btn btn-primary {{ 'active' if not request.args['event_type'] else '' }}">All</a>
+            <a href="{{ url_for('events.index', search=request.args['q'], event_type=EventType.NOTE.value) }}"
+                class="btn btn-primary {{ 'active' if request.args['event_type'] == EventType.NOTE.value|string() else '' }}">Note</a>
+            <a href="{{ url_for('events.index', search=request.args['q'], event_type=EventType.EVENT.value) }}"
+                class="btn btn-primary {{ 'active' if request.args['event_type'] == EventType.EVENT.value|string() else ''}}">Event</a>
+            <a href="{{ url_for('events.index', search=request.args['q'], event_type=EventType.REMINDER.value) }}"
+                class="btn btn-primary {{ 'active' if request.args['event_type'] == EventType.REMINDER.value|string() else '' }}">Reminder</a>
+            <a href="{{ url_for('events.index', search=request.args['q'], event_type=EventType.ENCRYPTED.value) }}"
+                class="btn btn-primary {{ 'active' if request.args['event_type'] == EventType.ENCRYPTED.value|string() else '' }}">Encrypted</a>
+        </div>
     </form>
+
     {% if events|length() > 0 %}
         {% for event in events %}
             <div class="card mb-2">
@@ -35,13 +49,13 @@
                                 <input type="button" value="Decrypt" onclick="decrypt('{{ event.id }}');" class="btn btn-primary">
                             </div>
                         </form>
-                        <input type="button" value="Hide" id="reEncrypt{{ event.id }}" onclick="reEncrypt('{{ event.id }}');" class="btn btn-primary" style='display: {{ "none" if checkCachedEncrypted(event) == "" else "inline"}};'>
+                        <input type="button" value="Hide" id="reEncrypt{{ event.id }}" onclick="reEncrypt('{{ event.id }}');" class="btn btn-primary" style='display: {{ "none" if checkCachedEncrypted(event) == "" else "inline-block"}};'>
                     {% else %}
                         <p class="card-text">{{ event.description }}</p>
                     {% endif %}
                     <form action="{{ url_for('events.remove', id=event.id) }}" method="post">
                         <a id='editEvent{{ event.id }}' href="{{ url_for('events.create_or_edit', id=event.id) }}" class="btn btn-primary" 
-                            style='display: {{ "none" if event.event_type == EventType.ENCRYPTED and checkCachedEncrypted(event) == "" else "inline"}};'>
+                            style='display: {{ "none" if event.event_type == EventType.ENCRYPTED and checkCachedEncrypted(event) == "" else "inline-block"}};'>
                             Edit</a>
                         <input type="submit" value="Delete" onclick="return confirm('Are you sure you want to delete this event?');" class="btn btn-danger">
                     </form>
@@ -52,6 +66,9 @@
         <p><em>No events found.</em></p>
     {% endif %}
 
-    <script src="{{ url_for('static', filename='scripts/events.js') }}"></script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='scripts/events.js') }}"></script>
 {% endblock %}
 

@@ -35,7 +35,9 @@ def index():
     user = getUser(current_username())
     search = request.args.get('q')
     search = search if search else ''
-    return render_template('events.html', events=getEventsByOwner(user, search=search),
+    event_type = request.args.get('event_type')
+    event_type = EventType(int(event_type)) if event_type else None
+    return render_template('events.html', events=getEventsByOwner(user, search=search, event_type=event_type),
                            username=current_username, search=search, EventType=EventType, pyDatetimeToMoment=pyDatetimeToMoment, checkCachedEncrypted=checkCachedEncrypted)
 
 @events.route('/create', methods=('POST', 'GET'))
